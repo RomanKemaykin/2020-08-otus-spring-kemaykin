@@ -2,6 +2,7 @@ package ru.otus.spring;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.spring.service.TestingService;
+
 import java.io.IOException;
 
 public class Main {
