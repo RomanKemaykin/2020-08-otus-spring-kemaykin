@@ -11,6 +11,14 @@ import java.util.List;
 import java.util.Scanner;
 
 public class TestingServiceImpl implements TestingService {
+    public String getTestingItemsFileName() {
+        return testingItemsFileName;
+    }
+
+    public void setTestingItemsFileName(String testingItemsFileName) {
+        this.testingItemsFileName = testingItemsFileName;
+    }
+
     private String testingItemsFileName;
     private List<TestingItem> testingItems;
 
