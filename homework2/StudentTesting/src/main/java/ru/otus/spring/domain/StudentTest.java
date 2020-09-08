@@ -1,11 +1,12 @@
 package ru.otus.spring.domain;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public final class StudentTest {
     private final String name;
     private final String lastName;
-    private final Map<Integer, Boolean> answerResults;
+    private Map<Integer, Boolean> answerResults;
     private final Boolean testPassed;
 
     public String getName() {
@@ -17,35 +18,18 @@ public final class StudentTest {
     }
 
     public Map<Integer, Boolean> getAnswerResults() {
-        return answerResults;
+        Map<Integer, Boolean> answerResultsClone = new HashMap<>();
+        for (int i = 0; i < answerResults.size(); i++) {
+            answerResultsClone.put(i, answerResults.get(i));
+        }
+        return answerResultsClone;
     }
 
-    public Boolean getTestPassed() {
-        return testPassed;
-    }
-
-    public Integer getCorrectAnswersNumberForPass() {
-        return correctAnswersNumberForPass;
-    }
-
-    public StudentTest(String name, String lastName, Map<Integer, Boolean> answerResults, Integer correctAnswersNumberForPass) {
+    public StudentTest(String name, String lastName, Map<Integer, Boolean> answerResults, Boolean testPassed) {
         this.name = name;
         this.lastName = lastName;
         this.answerResults = answerResults;
-        this.correctAnswersNumberForPass = correctAnswersNumberForPass;
-        this.testPassed = isTestPassed();
-    }
-
-    private Integer correctAnswersNumberForPass;
-
-    private Boolean isTestPassed() {
-        Integer correctAnswersNumber = 0;
-        for (int i = 0; i < answerResults.size(); i++) {
-            if (answerResults.get(i) == true) {
-                correctAnswersNumber++;
-            }
-        }
-        return (correctAnswersNumber >= correctAnswersNumberForPass);
+        this.testPassed = testPassed;
     }
 
     public void printTestingResults() {

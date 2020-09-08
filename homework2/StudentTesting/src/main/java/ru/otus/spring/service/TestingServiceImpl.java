@@ -12,18 +12,28 @@ import java.util.*;
 
 @Service
 public class TestingServiceImpl implements TestingService {
-    public String getTestingItemsFileName() {
-        return testingItemsFileName;
-    }
-
+    // Fields
     @Value("${testingItemsFileName}")
     private String testingItemsFileName;
-    private List<TestingItem> testingItems;
-    @Value("${correctAnswersNumberForPass}")
-    private Integer correctAnswersNumberForPass;
 
+    private List<TestingItem> testingItems;
+
+    @Value("${correctAnswersNumberForPass}")
+    private Integer correctAnswersCountForPass;
+
+    private Scanner inputSource = new Scanner(System.in);
+
+    private List<StudentTest> studentTests;
+
+    // Methods
     public TestingServiceImpl() {
         testingItems = new ArrayList<>();
+        studentTests = new ArrayList<>();
+    }
+
+    public TestingServiceImpl(List<TestingItem> testingItems, Integer correctAnswersCountForPass) {
+        this.testingItems = testingItems;
+        this.correctAnswersCountForPass = correctAnswersCountForPass;
         studentTests = new ArrayList<>();
     }
 
@@ -35,13 +45,15 @@ public class TestingServiceImpl implements TestingService {
         this.testingItems = testingItems;
     }
 
-    public List<StudentTest> getStudentTests() {
+    private String getTestingItemsFileName() {
+        return testingItemsFileName;
+    }
+
+    private List<StudentTest> getStudentTests() {
         return studentTests;
     }
 
-    private List<StudentTest> studentTests;
-
-    public void prepareTestingItems() throws IOException {
+    private void prepareTestingItems() throws IOException {
         ClassPathResource classPathResource = new ClassPathResource(testingItemsFileName);
         File file = classPathResource.getFile();
         Scanner fileScanner = new Scanner(file);
@@ -64,7 +76,6 @@ public class TestingServiceImpl implements TestingService {
             TestingItem testingItem = new TestingItem(question, answers, rightAnswer);
             testingItems.add(testingItem);
         }
-
     }
 
     public void printTestingItems() {
@@ -79,12 +90,19 @@ public class TestingServiceImpl implements TestingService {
         }
     }
 
-    public void testStudent() {
-        Scanner scanner = new Scanner(System.in);
+    public StudentTest testStudent(Scanner inputSource) {
         System.out.println("Enter your name: ");
-        String name = scanner.next();
+        String name = inputSource.next();
         System.out.println("Enter your last name: ");
-        String lastname = scanner.next();
+        String lastname = inputSource.next();
+        Map<Integer, Boolean> answerResults = getAnswerResults(inputSource);
+        Integer correctAnswersCount = getCorrectAnswersCount(answerResults);
+        Boolean isTestPassed = correctAnswersCount >= correctAnswersCountForPass;
+        StudentTest studentTest = new StudentTest(name, lastname, answerResults, isTestPassed);
+        return studentTest;
+    }
+
+    private Map<Integer, Boolean> getAnswerResults(Scanner inputSource) {
         Map<Integer, Boolean> answerResults = new HashMap<>();
         for (int i = 0; i < testingItems.size(); i++) {
             TestingItem testingItem = testingItems.get(i);
@@ -93,17 +111,29 @@ public class TestingServiceImpl implements TestingService {
             for (int j = 0; j < answers.size(); j++) {
                 System.out.println(answers.get(j));
             }
-            String answer = scanner.next();
+            String answer = inputSource.next();
             Boolean answerResult = answer.contentEquals(testingItem.getCorrectAnswer());
             answerResults.put(i, answerResult);
         }
-        StudentTest studentTest = new StudentTest(name, lastname, answerResults, correctAnswersNumberForPass);
-        studentTest.printTestingResults();
-        studentTests.add(studentTest);
+        return answerResults;
     }
 
+    private Integer getCorrectAnswersCount(Map<Integer, Boolean> answerResults) {
+        Integer correctAnswersCount = 0;
+        for (int i = 0; i < answerResults.size(); i++) {
+            if (answerResults.get(i) == true) {
+                correctAnswersCount++;
+            }
+        }
+        return correctAnswersCount;
+    }
+
+    @Override
     public void startStudentTesting() throws IOException {
         prepareTestingItems();
-        testStudent();
+
+        StudentTest studentTest = testStudent(inputSource);
+        studentTest.printTestingResults();
+        studentTests.add(studentTest);
     }
 }
