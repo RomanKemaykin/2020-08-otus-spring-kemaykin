@@ -16,7 +16,7 @@ public class TestingServiceImpl implements TestingService {
 
     private List<TestingItem> testingItems;
 
-    public Integer getCorrectAnswersCountForPass() {
+    private Integer getCorrectAnswersCountForPass() {
         return correctAnswersCountForPass;
     }
 
@@ -41,29 +41,7 @@ public class TestingServiceImpl implements TestingService {
         testingItems = testingItemDao.findAll();
     }
 
-    public List<TestingItem> getTestingItems() {
-        return testingItems;
-    }
-
-    public StudentTest testStudent() {
-        String s = messageSource.getMessage("enter.your.name", new String[]{}, props.getLocale());
-        ioService.out(s);
-        String name = ioService.readString();
-        s = messageSource.getMessage("enter.your.last.name", new String[]{}, props.getLocale());
-        ioService.out(s);
-        String lastname = ioService.readString();
-        Map<Integer, Boolean> answerResults = getAnswerResults();
-        Integer correctAnswersCount = getCorrectAnswersCount(answerResults);
-        Boolean isTestPassed = correctAnswersCount >= correctAnswersCountForPass;
-        StudentTest studentTest = new StudentTest(name, lastname, answerResults, isTestPassed);
-        return studentTest;
-    }
-
-    public List<StudentTest> getStudentTests() {
-        return studentTests;
-    }
-
-    public void printTestingItems() {
+    private void printTestingItems() {
         for (int i = 0; i < testingItems.size(); i++) {
             TestingItem testingItem = testingItems.get(i);
             ioService.out(testingItem.getQuestion());
@@ -111,6 +89,21 @@ public class TestingServiceImpl implements TestingService {
             resultText = messageSource.getMessage("you.have.not.passed.the.test", new String[]{}, props.getLocale());
         }
         ioService.out(resultText);
+    }
+
+    @Override
+    public StudentTest testStudent() {
+        String s = messageSource.getMessage("enter.your.name", new String[]{}, props.getLocale());
+        ioService.out(s);
+        String name = ioService.readString();
+        s = messageSource.getMessage("enter.your.last.name", new String[]{}, props.getLocale());
+        ioService.out(s);
+        String lastname = ioService.readString();
+        Map<Integer, Boolean> answerResults = getAnswerResults();
+        Integer correctAnswersCount = getCorrectAnswersCount(answerResults);
+        Boolean isTestPassed = correctAnswersCount >= correctAnswersCountForPass;
+        StudentTest studentTest = new StudentTest(name, lastname, answerResults, isTestPassed);
+        return studentTest;
     }
 
     @Override
