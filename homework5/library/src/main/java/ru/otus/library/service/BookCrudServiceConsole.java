@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import ru.otus.library.configs.YamlProps;
+import ru.otus.library.dao.AuthorDao;
 import ru.otus.library.dao.BookDao;
+import ru.otus.library.dao.GenreDao;
 import ru.otus.library.domain.Author;
 import ru.otus.library.domain.Book;
 import ru.otus.library.domain.Genre;
@@ -19,6 +21,8 @@ public class BookCrudServiceConsole implements BookCrudService {
     private final MessageSource messageSource;
     private final IOService ioService;
     private final BookDao bookDao;
+    private final AuthorDao authorDao;
+    private final GenreDao genreDao;
 
     @Override
     public void listAll() {
@@ -51,8 +55,29 @@ public class BookCrudServiceConsole implements BookCrudService {
         requestText = messageSource.getMessage("enter.genre.of.book", new String[]{}, props.getLocale());
         ioService.out(requestText);
         String genreName = ioService.readString();
-        Author author = new Author(0, authorName);
-        Genre genre = new Genre(0, genreName);
+
+        long existingAuthorId;
+        try {
+            Author existingAuthor;
+            existingAuthor = authorDao.getByName(authorName);
+            existingAuthorId = existingAuthor.getId();
+        } catch (Exception e) {
+            Author authorNew = new Author(0, authorName);
+            existingAuthorId = authorDao.insert(authorNew);
+        }
+        Author author = new Author(existingAuthorId, authorName);
+
+        long existingGenreId;
+        try {
+            Genre existingGenre;
+            existingGenre = genreDao.getByName(genreName);
+            existingGenreId = existingGenre.getId();
+        } catch (Exception e) {
+            Genre genreNew = new Genre(0, genreName);
+            existingGenreId = genreDao.insert(genreNew);
+        }
+        Genre genre = new Genre(existingGenreId, genreName);
+
         Book book = new Book(0, title, author, genre);
         bookDao.insert(book);
     }
@@ -81,8 +106,28 @@ public class BookCrudServiceConsole implements BookCrudService {
             genreName = book.getGenre().getName();
         }
 
-        Author author = new Author(0, authorName);
-        Genre genre = new Genre(0, genreName);
+        long existingAuthorId;
+        try {
+            Author existingAuthor;
+            existingAuthor = authorDao.getByName(authorName);
+            existingAuthorId = existingAuthor.getId();
+        } catch (Exception e) {
+            Author authorNew = new Author(0, authorName);
+            existingAuthorId = authorDao.insert(authorNew);
+        }
+        Author author = new Author(existingAuthorId, authorName);
+
+        long existingGenreId;
+        try {
+            Genre existingGenre;
+            existingGenre = genreDao.getByName(genreName);
+            existingGenreId = existingGenre.getId();
+        } catch (Exception e) {
+            Genre genreNew = new Genre(0, genreName);
+            existingGenreId = genreDao.insert(genreNew);
+        }
+        Genre genre = new Genre(existingGenreId, genreName);
+
         Book bookForUpdate = new Book(id, title, author, genre);
         bookDao.update(bookForUpdate);
     }

@@ -86,16 +86,6 @@ class BookDaoJdbcTest {
                 .isEqualToComparingOnlyGivenFields(expectedBook, "genre");
     }
 
-    @DisplayName("добавлять книгу с новым автором и новым жанром")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    @Test
-    void shouldInsertBookWithNewAuthorAndNewGenre() {
-        Book bookForInsert = new Book(0, BOOK_NEW_TITLE, AUTHOR_NEW_WITHOUT_ID, GENRE_NEW_WITHOUT_ID);
-        long actual_id = jdbc.insert(bookForInsert);
-        Book actualBook = jdbc.getById(actual_id);
-        assertThat(actualBook).isEqualTo(BOOK_NEW);
-    }
-
     @DisplayName("удалять книгу по id")
     @Test
     void shouldDeleteBookById() {
@@ -114,18 +104,4 @@ class BookDaoJdbcTest {
         Book actualBook = jdbc.getById(BOOK_ONE_ID);
         assertThat(actualBook).isEqualTo(expectedBook);
     }
-
-    @DisplayName("обновлять поля книги - с новыми автором и жанром")
-    @Test
-    void shouldUpdateBookFieldsWithNewAuthorAndNewGenre() {
-        Book bookForUpdate = new Book(BOOK_ONE_ID, BOOK_NEW_TITLE, AUTHOR_NEW_WITHOUT_ID, GENRE_NEW_WITHOUT_ID);
-        jdbc.update(bookForUpdate);
-        Book actualBook = jdbc.getById(BOOK_ONE_ID);
-        assertThat(actualBook)
-                .hasFieldOrPropertyWithValue(FIELD_ID, BOOK_ONE_ID)
-                .hasFieldOrPropertyWithValue(FIELD_TITLE, BOOK_NEW_TITLE)
-                .hasFieldOrPropertyWithValue(FIELD_AUTHOR, AUTHOR_NEW)
-                .hasFieldOrPropertyWithValue(FIELD_GENRE, GENRE_NEW);
-    }
-
 }

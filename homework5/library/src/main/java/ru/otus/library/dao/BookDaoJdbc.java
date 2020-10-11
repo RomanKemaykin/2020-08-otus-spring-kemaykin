@@ -24,19 +24,15 @@ import java.util.*;
 public class BookDaoJdbc implements BookDao {
     private final NamedParameterJdbcOperations jdbc;
 
-    private final AuthorDao authorDao;
-
-    private final GenreDao genreDao;
-
     @Override
     public Book getById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
         return jdbc.queryForObject(
                 "select b.id, b.title, a.id author_id, a.name author_name, g.id genre_id, g.name genre_name "
                         + " from books b "
-                        + "inner join authors a "
+                        + " left join authors a "
                         + "        on a.id = b.author_id "
-                        + "inner join genres g "
+                        + " left join genres g "
                         + "        on g.id = b.genre_id "
                         + "where b.id = :id"
                 , params, new BookRowMapper());
@@ -44,33 +40,8 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public void update(Book book) {
-        Author author = book.getAuthor();
-        long authorId = author.getId();
-        if (authorId == 0) {
-            Author existingAuthor;
-            long existingAuthorId;
-            try {
-                existingAuthor = authorDao.getByName(author.getName());
-                existingAuthorId = existingAuthor.getId();
-            } catch (Exception e) {
-                existingAuthorId = authorDao.insert(author);
-            }
-            authorId = existingAuthorId;
-        }
-
-        Genre genre = book.getGenre();
-        long genreId = genre.getId();
-        if (genreId == 0) {
-            Genre existingGenre;
-            long existingGenreId;
-            try {
-                existingGenre = genreDao.getByName(genre.getName());
-                existingGenreId = existingGenre.getId();
-            } catch (Exception e) {
-                existingGenreId = genreDao.insert(genre);
-            }
-            genreId = existingGenreId;
-        }
+        long authorId = book.getAuthor().getId();
+        long genreId = book.getGenre().getId();
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", book.getId());
@@ -105,33 +76,8 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public long insert(Book book) {
-        Author author = book.getAuthor();
-        long authorId = author.getId();
-        if (authorId == 0) {
-            Author existingAuthor;
-            long existingAuthorId;
-            try {
-                existingAuthor = authorDao.getByName(author.getName());
-                existingAuthorId = existingAuthor.getId();
-            } catch (Exception e) {
-                existingAuthorId = authorDao.insert(author);
-            }
-            authorId = existingAuthorId;
-        }
-
-        Genre genre = book.getGenre();
-        long genreId = genre.getId();
-        if (genreId == 0) {
-            Genre existingGenre;
-            long existingGenreId;
-            try {
-                existingGenre = genreDao.getByName(genre.getName());
-                existingGenreId = existingGenre.getId();
-            } catch (Exception e) {
-                existingGenreId = genreDao.insert(genre);
-            }
-            genreId = existingGenreId;
-        }
+        long authorId = book.getAuthor().getId();
+        long genreId = book.getGenre().getId();
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("title", book.getTitle());
