@@ -58,7 +58,8 @@ public class BookCommentCrudServiceConsole implements BookCommentCrudService {
     @Override
     @Transactional
     public void deleteById(long id) {
-        bookCommentRepository.delete(id);
+        BookComment deletingBookComment = bookCommentRepository.getById(id);
+        bookCommentRepository.delete(deletingBookComment);
     }
 
     @Override
@@ -70,7 +71,8 @@ public class BookCommentCrudServiceConsole implements BookCommentCrudService {
             requestText = messageSource.getMessage("enter.new.book.comment", new String[]{}, props.getLocale());
             ioService.out(requestText);
             String comment = ioService.readString();
-            bookCommentRepository.updateCommentById(id, comment);
+            bookComment.setComment(comment);
+            bookCommentRepository.update(bookComment);
         }
     }
 }

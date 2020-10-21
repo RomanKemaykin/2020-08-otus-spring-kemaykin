@@ -7,6 +7,8 @@ import ru.otus.library.models.Author;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Repository
@@ -32,9 +34,8 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public Author getById(long id) {
-        TypedQuery<Author> query = em.createQuery("select a from Author a where a.id = :id", Author.class);
-        query.setParameter("id", id);
-        return query.getSingleResult();
+        Author author = em.find(Author.class, id);
+        return author;
     }
 
 }

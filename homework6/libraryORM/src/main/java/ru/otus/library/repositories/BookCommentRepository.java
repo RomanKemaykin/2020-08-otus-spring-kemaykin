@@ -1,7 +1,5 @@
 package ru.otus.library.repositories;
 
-import ru.otus.library.models.Author;
-import ru.otus.library.models.Book;
 import ru.otus.library.models.BookComment;
 
 import java.util.List;
@@ -13,7 +11,7 @@ public interface BookCommentRepository {
 
     List<BookComment> getListByBookId(long bookId);
 
-    void updateCommentById(long id, String newComment);
+    void update(BookComment bookComment);
 
-    void delete(long id);
+    void delete(BookComment bookComment);
 }

@@ -91,7 +91,8 @@ class BookRepositoryJpaTest {
     @DisplayName("удалять книгу по id")
     @Test
     void shouldDeleteBookById() {
-        bookRepositoryJpa.delete(BOOK_ONE_ID);
+        Book deletingBook = em.find(Book.class, BOOK_ONE_ID);
+        bookRepositoryJpa.delete(deletingBook);
         List<Book> books = bookRepositoryJpa.getAll();
         assertThat(books)
                 .hasSize(3)

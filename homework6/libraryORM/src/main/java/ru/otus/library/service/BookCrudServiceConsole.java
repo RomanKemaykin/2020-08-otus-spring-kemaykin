@@ -42,7 +42,8 @@ public class BookCrudServiceConsole implements BookCrudService {
     @Override
     @Transactional
     public void deleteBookById(long id) {
-        bookRepository.delete(id);
+        Book deletingBook = bookRepository.getById(id);
+        bookRepository.delete(deletingBook);
     }
 
     @Override

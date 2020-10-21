@@ -2,7 +2,6 @@ package ru.otus.library.repositories;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.otus.library.models.Book;
 import ru.otus.library.models.BookComment;
 
 import javax.persistence.EntityManager;
@@ -19,9 +18,7 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
 
     @Override
     public BookComment getById(long id) {
-        TypedQuery<BookComment> query = em.createQuery("select bc from BookComment bc where id = :id", BookComment.class);
-        query.setParameter("id", id);
-        return query.getSingleResult();
+        return em.find(BookComment.class, id);
     }
 
     @Override
@@ -41,17 +38,12 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
     }
 
     @Override
-    public void updateCommentById(long id, String newComment) {
-        Query query = em.createQuery("update BookComment set comment = :newComment where id = :id");
-        query.setParameter("id", id);
-        query.setParameter("newComment", newComment);
-        query.executeUpdate();
+    public void update(BookComment bookComment) {
+        em.merge(bookComment);
     }
 
     @Override
-    public void delete(long id) {
-        Query query = em.createQuery("delete from BookComment bc where bc.id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+    public void delete(BookComment bookComment) {
+        em.remove(bookComment);
     }
 }

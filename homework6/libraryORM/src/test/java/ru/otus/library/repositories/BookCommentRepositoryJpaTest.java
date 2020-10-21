@@ -98,7 +98,9 @@ class BookCommentRepositoryJpaTest {
     @DisplayName("изменять текст заданного комментария")
     @Test
     void shouldUpdateCommentById() {
-        bookCommentRepositoryJpa.updateCommentById(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT_NEW);
+        BookComment bookCommentForUpdate = em.find(BookComment.class, BOOK_ONE_COMMENT1_ID);
+        bookCommentForUpdate.setComment(BOOK_ONE_COMMENT1_COMMENT_NEW);
+        bookCommentRepositoryJpa.update(bookCommentForUpdate);
         BookComment actualBookComment = em.find(BookComment.class, BOOK_ONE_COMMENT1_ID);
         assertThat(actualBookComment).isEqualTo(BOOK_ONE_COMMENT1_NEW);
     }
@@ -106,7 +108,8 @@ class BookCommentRepositoryJpaTest {
     @DisplayName("удалять заданный комментарий")
     @Test
     void shouldDelete() {
-        bookCommentRepositoryJpa.delete(BOOK_ONE_COMMENT1_ID);
+        BookComment deletingBookComment = em.find(BookComment.class, BOOK_ONE_COMMENT1_ID);
+        bookCommentRepositoryJpa.delete(deletingBookComment);
         List<BookComment> bookComments = bookCommentRepositoryJpa.getListByBookId(BOOK_ONE_ID);
         assertThat(bookComments)
                 .hasSize(2)
