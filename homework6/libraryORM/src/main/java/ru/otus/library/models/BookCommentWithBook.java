@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "book_comments")
-public class BookComment {
+public class BookCommentWithBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -19,4 +19,8 @@ public class BookComment {
 
     @Column(name = "comment")
     private String comment;
+
+    @OneToOne(targetEntity = Book.class)
+    @JoinColumn(name = "book_id")
+    private Book book;
 }

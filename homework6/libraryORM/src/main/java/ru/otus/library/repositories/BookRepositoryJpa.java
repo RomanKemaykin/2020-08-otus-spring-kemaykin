@@ -3,6 +3,7 @@ package ru.otus.library.repositories;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.otus.library.models.Book;
+import ru.otus.library.models.BookWithComments;
 
 import javax.persistence.*;
 import java.util.*;
@@ -26,6 +27,11 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public void delete(Book book) {
         em.remove(book);
+    }
+
+    @Override
+    public BookWithComments getBookWithCommentsById(long id) {
+        return em.find(BookWithComments.class, id);
     }
 
     @Override

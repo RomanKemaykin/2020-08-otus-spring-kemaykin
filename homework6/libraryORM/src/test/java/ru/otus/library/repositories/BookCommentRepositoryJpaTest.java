@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import ru.otus.library.models.Author;
-import ru.otus.library.models.Book;
-import ru.otus.library.models.BookComment;
-import ru.otus.library.models.Genre;
+import ru.otus.library.models.*;
 
 import java.util.List;
 
@@ -56,63 +53,51 @@ class BookCommentRepositoryJpaTest {
 
     private static final long BOOK_ONE_COMMENT1_ID = 1;
     private static final String BOOK_ONE_COMMENT1_COMMENT = "book one comment1";
-    private static final BookComment BOOK_ONE_COMMENT1 = new BookComment(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT, BOOK_ONE);
+    private static final BookCommentWithBook BOOK_ONE_COMMENT1 = new BookCommentWithBook(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT, BOOK_ONE);
     private static final long BOOK_ONE_COMMENT2_ID = 2;
     private static final String BOOK_ONE_COMMENT2_COMMENT = "book one comment2";
-    private static final BookComment BOOK_ONE_COMMENT2 = new BookComment(BOOK_ONE_COMMENT2_ID, BOOK_ONE_COMMENT2_COMMENT, BOOK_ONE);
+    private static final BookCommentWithBook BOOK_ONE_COMMENT2 = new BookCommentWithBook(BOOK_ONE_COMMENT2_ID, BOOK_ONE_COMMENT2_COMMENT, BOOK_ONE);
     private static final long BOOK_ONE_COMMENT3_ID = 3;
     private static final String BOOK_ONE_COMMENT3_COMMENT = "book one comment3";
-    private static final BookComment BOOK_ONE_COMMENT3 = new BookComment(BOOK_ONE_COMMENT3_ID, BOOK_ONE_COMMENT3_COMMENT, BOOK_ONE);
+    private static final BookCommentWithBook BOOK_ONE_COMMENT3 = new BookCommentWithBook(BOOK_ONE_COMMENT3_ID, BOOK_ONE_COMMENT3_COMMENT, BOOK_ONE);
     private static final String BOOK_ONE_COMMENT1_COMMENT_NEW = "book one comment111";
-    private static final BookComment BOOK_ONE_COMMENT1_NEW = new BookComment(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT_NEW, BOOK_ONE);
+    private static final BookCommentWithBook BOOK_ONE_COMMENT1_NEW = new BookCommentWithBook(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT_NEW, BOOK_ONE);
     private static final long BOOK_ONE_COMMENT_NEW_ID = 7;
     private static final String BOOK_ONE_COMMENT_NEW_COMMENT = "book one comment new";
-    private static final BookComment BOOK_ONE_COMMENT_NEW = new BookComment(BOOK_ONE_COMMENT_NEW_ID, BOOK_ONE_COMMENT_NEW_COMMENT, BOOK_ONE);
+    private static final BookCommentWithBook BOOK_ONE_COMMENT_NEW = new BookCommentWithBook(BOOK_ONE_COMMENT_NEW_ID, BOOK_ONE_COMMENT_NEW_COMMENT, BOOK_ONE);
 
     @DisplayName("сохранять комментарий")
     @Test
     void shouldSaveBookComment() {
         Book book = em.find(Book.class, BOOK_ONE_ID);
-        BookComment expectedBookComment = new BookComment(0, BOOK_ONE_COMMENT_NEW_COMMENT, book);
-        bookCommentRepositoryJpa.save(expectedBookComment);
-        BookComment actualBookComment = em.find(BookComment.class, BOOK_ONE_COMMENT_NEW_ID);
-        assertThat(actualBookComment).isEqualTo(BOOK_ONE_COMMENT_NEW);
+        BookCommentWithBook expectedBookCommentWithBook = new BookCommentWithBook(0, BOOK_ONE_COMMENT_NEW_COMMENT, book);
+        bookCommentRepositoryJpa.save(expectedBookCommentWithBook);
+        BookCommentWithBook actualBookCommentWithBook = em.find(BookCommentWithBook.class, BOOK_ONE_COMMENT_NEW_ID);
+        assertThat(actualBookCommentWithBook).isEqualTo(BOOK_ONE_COMMENT_NEW);
     }
 
     @DisplayName("возвращать комментарий по id")
     @Test
     void shouldReturnBookCommentById() {
-        BookComment bookComment = bookCommentRepositoryJpa.getById(BOOK_ONE_COMMENT1_ID);
-        assertThat(bookComment).isEqualTo(BOOK_ONE_COMMENT1);
-    }
-
-    @DisplayName("возвращать все комментарии к заданной книге")
-    @Test
-    void shouldReturnBookCommentListByBookId() {
-        List<BookComment> bookComments = bookCommentRepositoryJpa.getListByBookId(BOOK_ONE_ID);
-        assertThat(bookComments)
-                .hasSize(3)
-                .contains(BOOK_ONE_COMMENT1, BOOK_ONE_COMMENT2, BOOK_ONE_COMMENT3);
+        BookCommentWithBook bookCommentWithBook = bookCommentRepositoryJpa.getById(BOOK_ONE_COMMENT1_ID);
+        assertThat(bookCommentWithBook).isEqualTo(BOOK_ONE_COMMENT1);
     }
 
     @DisplayName("изменять текст заданного комментария")
     @Test
     void shouldUpdateCommentById() {
-        BookComment bookCommentForUpdate = em.find(BookComment.class, BOOK_ONE_COMMENT1_ID);
-        bookCommentForUpdate.setComment(BOOK_ONE_COMMENT1_COMMENT_NEW);
-        bookCommentRepositoryJpa.update(bookCommentForUpdate);
-        BookComment actualBookComment = em.find(BookComment.class, BOOK_ONE_COMMENT1_ID);
-        assertThat(actualBookComment).isEqualTo(BOOK_ONE_COMMENT1_NEW);
+        BookCommentWithBook bookCommentWithBookForUpdate = em.find(BookCommentWithBook.class, BOOK_ONE_COMMENT1_ID);
+        bookCommentWithBookForUpdate.setComment(BOOK_ONE_COMMENT1_COMMENT_NEW);
+        bookCommentRepositoryJpa.update(bookCommentWithBookForUpdate);
+        BookCommentWithBook actualBookCommentWithBook = em.find(BookCommentWithBook.class, BOOK_ONE_COMMENT1_ID);
+        assertThat(actualBookCommentWithBook).isEqualTo(BOOK_ONE_COMMENT1_NEW);
     }
 
     @DisplayName("удалять заданный комментарий")
     @Test
     void shouldDelete() {
-        BookComment deletingBookComment = em.find(BookComment.class, BOOK_ONE_COMMENT1_ID);
-        bookCommentRepositoryJpa.delete(deletingBookComment);
-        List<BookComment> bookComments = bookCommentRepositoryJpa.getListByBookId(BOOK_ONE_ID);
-        assertThat(bookComments)
-                .hasSize(2)
-                .doesNotContain(BOOK_ONE_COMMENT1);
+        BookCommentWithBook deletingBookCommentWithBook = em.find(BookCommentWithBook.class, BOOK_ONE_COMMENT1_ID);
+        bookCommentRepositoryJpa.delete(deletingBookCommentWithBook);
+        assertThat(em.find(BookCommentWithBook.class, BOOK_ONE_COMMENT1_ID)).isNull();
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.library.configs.YamlProps;
 import ru.otus.library.models.Book;
 import ru.otus.library.models.BookComment;
+import ru.otus.library.models.BookCommentWithBook;
+import ru.otus.library.models.BookWithComments;
 import ru.otus.library.repositories.BookCommentRepository;
 import ru.otus.library.repositories.BookRepository;
 
@@ -23,13 +25,13 @@ public class BookCommentCrudServiceConsole implements BookCommentCrudService {
 
     @Override
     public void listAllByBookId(long bookId) {
-        List<BookComment> bookComments = bookCommentRepository.getListByBookId(bookId);
+        BookWithComments bookWithComments = bookRepository.getBookWithCommentsById(bookId);
+        List<BookComment> bookComments = bookWithComments.getBookComment();
         String outLine;
         if (bookComments.size() > 0) {
-            Book book = bookComments.get(0).getBook();
-            outLine = messageSource.getMessage("book.with.id", new String[]{String.valueOf(book.getId())}, props.getLocale());
+            outLine = messageSource.getMessage("book.with.id", new String[]{String.valueOf(bookWithComments.getId())}, props.getLocale());
             ioService.out(outLine);
-            outLine = messageSource.getMessage("book.title", new String[]{book.getTitle()}, props.getLocale());
+            outLine = messageSource.getMessage("book.title", new String[]{bookWithComments.getTitle()}, props.getLocale());
             ioService.out(outLine);
             for (int i = 0; i < bookComments.size(); i++) {
                 BookComment bookComment = bookComments.get(i);
@@ -50,29 +52,31 @@ public class BookCommentCrudServiceConsole implements BookCommentCrudService {
             requestText = messageSource.getMessage("enter.book.comment", new String[]{}, props.getLocale());
             ioService.out(requestText);
             String comment = ioService.readString();
-            BookComment bookComment = new BookComment(0, comment, book);
-            bookCommentRepository.save(bookComment);
+            BookCommentWithBook bookCommentWithBook = new BookCommentWithBook(0, comment, book);
+            bookCommentRepository.save(bookCommentWithBook);
         }
     }
 
     @Override
     @Transactional
     public void deleteById(long id) {
-        BookComment deletingBookComment = bookCommentRepository.getById(id);
-        bookCommentRepository.delete(deletingBookComment);
+        BookCommentWithBook deletingBookCommentWithBook = bookCommentRepository.getById(id);
+        bookCommentRepository.delete(deletingBookCommentWithBook);
     }
 
     @Override
     @Transactional
     public void modifyCommentById(long id) {
         String requestText;
-        BookComment bookComment = bookCommentRepository.getById(id);
-        if (bookComment != null) {
+        BookCommentWithBook bookCommentWithBook = bookCommentRepository.getById(id);
+        if (bookCommentWithBook != null) {
             requestText = messageSource.getMessage("enter.new.book.comment", new String[]{}, props.getLocale());
             ioService.out(requestText);
             String comment = ioService.readString();
-            bookComment.setComment(comment);
-            bookCommentRepository.update(bookComment);
+            if (!comment.isEmpty()) {
+                bookCommentWithBook.setComment(comment);
+            }
+            bookCommentRepository.update(bookCommentWithBook);
         }
     }
 }

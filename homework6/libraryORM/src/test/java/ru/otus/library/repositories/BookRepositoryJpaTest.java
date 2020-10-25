@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import ru.otus.library.models.Author;
-import ru.otus.library.models.Book;
-import ru.otus.library.models.Genre;
+import ru.otus.library.models.*;
 
 import java.util.List;
 
@@ -53,6 +51,21 @@ class BookRepositoryJpaTest {
     private static final long BOOK_NEW_ID = 5;
     private static final String BOOK_NEW_TITLE = "book new";
     private static final Book BOOK_NEW = new Book(BOOK_NEW_ID, BOOK_NEW_TITLE, AUTHOR_NEW, GENRE_NEW);
+
+    private static final long BOOK_ONE_COMMENT1_ID = 1;
+    private static final String BOOK_ONE_COMMENT1_COMMENT = "book one comment1";
+    private static final BookComment BOOK_ONE_COMMENT1 = new BookComment(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT);
+    private static final long BOOK_ONE_COMMENT2_ID = 2;
+    private static final String BOOK_ONE_COMMENT2_COMMENT = "book one comment2";
+    private static final BookComment BOOK_ONE_COMMENT2 = new BookComment(BOOK_ONE_COMMENT2_ID, BOOK_ONE_COMMENT2_COMMENT);
+    private static final long BOOK_ONE_COMMENT3_ID = 3;
+    private static final String BOOK_ONE_COMMENT3_COMMENT = "book one comment3";
+    private static final BookComment BOOK_ONE_COMMENT3 = new BookComment(BOOK_ONE_COMMENT3_ID, BOOK_ONE_COMMENT3_COMMENT);
+    private static final String BOOK_ONE_COMMENT1_COMMENT_NEW = "book one comment111";
+    private static final BookCommentWithBook BOOK_ONE_COMMENT1_NEW = new BookCommentWithBook(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT_NEW, BOOK_ONE);
+    private static final long BOOK_ONE_COMMENT_NEW_ID = 7;
+    private static final String BOOK_ONE_COMMENT_NEW_COMMENT = "book one comment new";
+    private static final BookCommentWithBook BOOK_ONE_COMMENT_NEW = new BookCommentWithBook(BOOK_ONE_COMMENT_NEW_ID, BOOK_ONE_COMMENT_NEW_COMMENT, BOOK_ONE);
 
     private static final String FIELD_ID = "id";
     private static final String FIELD_NAME = "name";
@@ -122,4 +135,14 @@ class BookRepositoryJpaTest {
         Book actualBook = bookRepositoryJpa.getById(BOOK_ONE_ID);
         assertThat(actualBook).isEqualTo(expectedBook);
     }
+
+    @DisplayName("возвращать книгу с комментариями")
+    @Test
+    void shouldReturnBookWithCommentById() {
+        BookWithComments bookWithComments = em.find(BookWithComments.class, BOOK_ONE_ID);
+        assertThat(bookWithComments.getBookComment())
+                .hasSize(3)
+                .contains(BOOK_ONE_COMMENT1, BOOK_ONE_COMMENT2, BOOK_ONE_COMMENT3);
+    }
+
 }
