@@ -24,6 +24,7 @@ public class BookCommentCrudServiceConsole implements BookCommentCrudService {
     private final BookRepository bookRepository;
 
     @Override
+    @Transactional
     public void listAllByBookId(long bookId) {
         BookWithComments bookWithComments = bookRepository.getBookWithCommentsById(bookId);
         List<BookComment> bookComments = bookWithComments.getBookComment();
