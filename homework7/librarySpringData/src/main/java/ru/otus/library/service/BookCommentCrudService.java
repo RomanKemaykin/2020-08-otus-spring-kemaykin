@@ -1,11 +1,17 @@
 package ru.otus.library.service;
 
-public interface BookCommentCrudService {
-    void listAllByBookId(long bookId);
+import ru.otus.library.dto.BookCommentDto;
 
-    void add(long id);
+import java.util.List;
+
+public interface BookCommentCrudService {
+    BookCommentDto findById(long id);
+
+    List<BookCommentDto> findAllByBookId(long bookId);
+
+    void add(BookCommentDto bookCommentDto);
 
     void deleteById(long id);
 
-    void modifyCommentById(long id);
+    void modifyComment(BookCommentDto bookCommentDto);
 }

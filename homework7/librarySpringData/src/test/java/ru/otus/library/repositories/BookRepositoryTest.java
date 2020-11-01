@@ -45,25 +45,25 @@ class BookRepositoryTest {
 
     private static final long BOOK_ONE_ID = 1;
     private static final String BOOK_ONE_TITLE = "book one";
-    private static final Book BOOK_ONE = new Book(BOOK_ONE_ID, BOOK_ONE_TITLE, AUTHOR_ONE, GENRE_ONE);
+    private static final Book BOOK_ONE = new Book(BOOK_ONE_ID, BOOK_ONE_TITLE, AUTHOR_ONE, GENRE_ONE, null);
     private static final long BOOK_NEW_ID = 5;
     private static final String BOOK_NEW_TITLE = "book new";
-    private static final Book BOOK_NEW = new Book(BOOK_NEW_ID, BOOK_NEW_TITLE, AUTHOR_NEW, GENRE_NEW);
+    private static final Book BOOK_NEW = new Book(BOOK_NEW_ID, BOOK_NEW_TITLE, AUTHOR_NEW, GENRE_NEW, null);
 
     private static final long BOOK_ONE_COMMENT1_ID = 1;
     private static final String BOOK_ONE_COMMENT1_COMMENT = "book one comment1";
-    private static final BookComment BOOK_ONE_COMMENT1 = new BookComment(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT);
+    private static final BookComment BOOK_ONE_COMMENT1 = new BookComment(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT, BOOK_ONE);
     private static final long BOOK_ONE_COMMENT2_ID = 2;
     private static final String BOOK_ONE_COMMENT2_COMMENT = "book one comment2";
-    private static final BookComment BOOK_ONE_COMMENT2 = new BookComment(BOOK_ONE_COMMENT2_ID, BOOK_ONE_COMMENT2_COMMENT);
+    private static final BookComment BOOK_ONE_COMMENT2 = new BookComment(BOOK_ONE_COMMENT2_ID, BOOK_ONE_COMMENT2_COMMENT, BOOK_ONE);
     private static final long BOOK_ONE_COMMENT3_ID = 3;
     private static final String BOOK_ONE_COMMENT3_COMMENT = "book one comment3";
-    private static final BookComment BOOK_ONE_COMMENT3 = new BookComment(BOOK_ONE_COMMENT3_ID, BOOK_ONE_COMMENT3_COMMENT);
+    private static final BookComment BOOK_ONE_COMMENT3 = new BookComment(BOOK_ONE_COMMENT3_ID, BOOK_ONE_COMMENT3_COMMENT, BOOK_ONE);
     private static final String BOOK_ONE_COMMENT1_COMMENT_NEW = "book one comment111";
-    private static final BookCommentWithBook BOOK_ONE_COMMENT1_NEW = new BookCommentWithBook(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT_NEW, BOOK_ONE);
+    private static final BookComment BOOK_ONE_COMMENT1_NEW = new BookComment(BOOK_ONE_COMMENT1_ID, BOOK_ONE_COMMENT1_COMMENT_NEW, BOOK_ONE);
     private static final long BOOK_ONE_COMMENT_NEW_ID = 7;
     private static final String BOOK_ONE_COMMENT_NEW_COMMENT = "book one comment new";
-    private static final BookCommentWithBook BOOK_ONE_COMMENT_NEW = new BookCommentWithBook(BOOK_ONE_COMMENT_NEW_ID, BOOK_ONE_COMMENT_NEW_COMMENT, BOOK_ONE);
+    private static final BookComment BOOK_ONE_COMMENT_NEW = new BookComment(BOOK_ONE_COMMENT_NEW_ID, BOOK_ONE_COMMENT_NEW_COMMENT, BOOK_ONE);
 
     private static final String FIELD_ID = "id";
     private static final String FIELD_NAME = "name";
@@ -74,8 +74,13 @@ class BookRepositoryTest {
     @DisplayName("возвращать книгу по id")
     @Test
     void shouldReturnExpectedBook() {
-        Book actualBook = bookRepository.getById(BOOK_ONE_ID);
-        assertThat(actualBook).isEqualTo(BOOK_ONE);
+        Book actualBook = bookRepository.findById(BOOK_ONE_ID);
+        assertThat(actualBook)
+                .hasFieldOrPropertyWithValue(FIELD_ID, BOOK_ONE_ID)
+                .isEqualToComparingOnlyGivenFields(BOOK_ONE, FIELD_TITLE)
+                .isEqualToComparingOnlyGivenFields(BOOK_ONE, FIELD_AUTHOR)
+                .isEqualToComparingOnlyGivenFields(BOOK_ONE, FIELD_GENRE);
+
     }
 
     @DisplayName("возвращать все книги")
@@ -83,9 +88,9 @@ class BookRepositoryTest {
     void shouldReturnAllBooks() {
         List<Book> books = bookRepository.findAll();
         assertThat(books)
-                .hasSize(4)
-                .contains(BOOK_ONE);
+                .hasSize(4);
     }
+
 
     @DisplayName("удалять книгу по id")
     @Test
@@ -103,9 +108,9 @@ class BookRepositoryTest {
     void shouldSaveBookWithExistingAuthorAndExistingGenre() {
         Author author = em.find(Author.class, AUTHOR_ONE_ID);
         Genre genre = em.find(Genre.class, GENRE_ONE_ID);
-        Book expectedBook = new Book(0, BOOK_NEW_TITLE, author, genre);
+        Book expectedBook = new Book(0, BOOK_NEW_TITLE, author, genre, null);
         bookRepository.save(expectedBook);
-        Book actualBook = bookRepository.getById(expectedBook.getId());
+        Book actualBook = bookRepository.findById(expectedBook.getId());
         assertThat(actualBook)
                 .hasFieldOrPropertyWithValue(FIELD_ID, BOOK_NEW_ID)
                 .isEqualToComparingOnlyGivenFields(expectedBook, "title")
@@ -116,9 +121,9 @@ class BookRepositoryTest {
     @DisplayName("обновлять поля книги - с существующими автором и жанром")
     @Test
     void shouldUpdateBookFieldsWithExistingAuthorAndExistingGenre() {
-        Book expectedBook = new Book(BOOK_ONE_ID, BOOK_NEW_TITLE, AUTHOR_TWO, GENRE_TWO);
+        Book expectedBook = new Book(BOOK_ONE_ID, BOOK_NEW_TITLE, AUTHOR_TWO, GENRE_TWO, null);
         bookRepository.save(expectedBook);
-        Book actualBook = bookRepository.getById(BOOK_ONE_ID);
+        Book actualBook = bookRepository.findById(BOOK_ONE_ID);
         assertThat(actualBook).isEqualTo(expectedBook);
     }
 }

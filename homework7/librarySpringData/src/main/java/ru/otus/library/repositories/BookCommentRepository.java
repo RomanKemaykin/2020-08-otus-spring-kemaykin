@@ -2,12 +2,12 @@ package ru.otus.library.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
-import ru.otus.library.models.BookCommentWithBook;
+import ru.otus.library.models.BookComment;
 
-public interface BookCommentRepository extends CrudRepository<BookCommentWithBook, Long> {
-    BookCommentWithBook save(BookCommentWithBook bookCommentWithBook);
+public interface BookCommentRepository extends CrudRepository<BookComment, Long> {
+    BookComment save(BookComment bookCommentWithBook);
 
-    BookCommentWithBook getById(long id);
+    BookComment getById(long id);
 
-    void delete(BookCommentWithBook bookCommentWithBook);
+    void delete(BookComment bookCommentWithBook);
 }

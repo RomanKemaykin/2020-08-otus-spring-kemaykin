@@ -1,4 +1,4 @@
-package ru.otus.library.repositories;
+package ru.otus.library.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,17 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import ru.otus.library.models.*;
+import ru.otus.library.dto.BookCommentDto;
+import ru.otus.library.models.Author;
+import ru.otus.library.models.Book;
+import ru.otus.library.models.BookComment;
+import ru.otus.library.models.Genre;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Дао для работы с комментариями к книгам должно:")
+@DisplayName("Сервис для работы с комментариями к книгам должен:")
 @DataJpaTest
-class BookCommentRepositoryTest {
+@Import(BookCommentCrudServiceImpl.class)
+class BookCommentCrudServiceImplTest {
     @Autowired
-    private BookCommentRepository bookCommentRepositoryJpa;
+    private BookCommentCrudServiceImpl bookCommentCrudService;
 
     @Autowired
     private TestEntityManager em;
@@ -68,43 +73,55 @@ class BookCommentRepositoryTest {
 
     private static final String FIELD_ID = "id";
     private static final String FIELD_COMMENT = "comment";
+    private static final String FIELD_BOOK_ID = "bookId";
+    private static final String FIELD_BOOK_TITLE = "bookTitle";
+    private static final String FIELD_BOOK_COMMENT = "bookComment";
 
-    @DisplayName("сохранять комментарий")
+    @DisplayName("возвращать список dto с комментариями к заданной книге")
     @Test
-    void shouldSaveBookComment() {
-        Book book = em.find(Book.class, BOOK_ONE_ID);
-        BookComment expectedBookComment = new BookComment(0, BOOK_ONE_COMMENT_NEW_COMMENT, book);
-        bookCommentRepositoryJpa.save(expectedBookComment);
+    void listAllByBoCokId() {
+        List<BookCommentDto> bookCommentDtoList = bookCommentCrudService.findAllByBookId(BOOK_ONE_ID);
+        assertThat(bookCommentDtoList)
+                .hasSize(3)
+                .contains(new BookCommentDto(BOOK_ONE_COMMENT1_ID, BOOK_ONE_ID, BOOK_ONE_TITLE, BOOK_ONE_COMMENT1_COMMENT));
+    }
+
+    @DisplayName("добавлять комментарий к заданной книге")
+    @Test
+    void add() {
+        BookCommentDto bookCommentDto = new BookCommentDto(0, BOOK_ONE_ID, "", BOOK_ONE_COMMENT_NEW_COMMENT);
+        bookCommentCrudService.add(bookCommentDto);
         BookComment actualBookComment = em.find(BookComment.class, BOOK_ONE_COMMENT_NEW_ID);
         assertThat(actualBookComment)
-                .hasFieldOrPropertyWithValue(FIELD_COMMENT, BOOK_ONE_COMMENT_NEW_COMMENT);
+                .hasFieldOrPropertyWithValue(FIELD_COMMENT, BOOK_ONE_COMMENT_NEW_COMMENT)
+                .matches(bc -> bc.getBook().getId() == BOOK_ONE_ID);
     }
 
-    @DisplayName("возвращать комментарий по id")
+    @DisplayName("удалять комментарий по id")
     @Test
-    void shouldReturnBookCommentById() {
-        BookComment BookComment = bookCommentRepositoryJpa.getById(BOOK_ONE_COMMENT1_ID);
-        assertThat(BookComment)
-                .isEqualToComparingOnlyGivenFields(BOOK_ONE_COMMENT1, FIELD_ID)
-                .isEqualToComparingOnlyGivenFields(BOOK_ONE_COMMENT1, FIELD_COMMENT);
+    void deleteById() {
+        bookCommentCrudService.deleteById(BOOK_ONE_COMMENT2_ID);
+        BookComment bookComment = em.find(BookComment.class, BOOK_ONE_COMMENT2_ID);
+        assertThat(bookComment).isNull();
     }
 
-    @DisplayName("изменять текст заданного комментария")
+    @DisplayName("обновлять текст заданного комментария")
     @Test
-    void shouldUpdateCommentById() {
-        BookComment BookCommentForUpdate = em.find(BookComment.class, BOOK_ONE_COMMENT1_ID);
-        BookCommentForUpdate.setComment(BOOK_ONE_COMMENT1_COMMENT_NEW);
-        bookCommentRepositoryJpa.save(BookCommentForUpdate);
+    void modifyComment() {
+        BookCommentDto bookCommentDto = new BookCommentDto(BOOK_ONE_COMMENT1_ID, BOOK_ONE_ID, "", BOOK_ONE_COMMENT1_COMMENT_NEW);
+        bookCommentCrudService.modifyComment(bookCommentDto);
         BookComment actualBookComment = em.find(BookComment.class, BOOK_ONE_COMMENT1_ID);
-        assertThat(actualBookComment)
-                .hasFieldOrPropertyWithValue(FIELD_COMMENT, BOOK_ONE_COMMENT1_COMMENT_NEW);
+        assertThat(actualBookComment).hasFieldOrPropertyWithValue(FIELD_COMMENT, BOOK_ONE_COMMENT1_COMMENT_NEW);
     }
 
-    @DisplayName("удалять заданный комментарий")
+    @DisplayName("возвращать dto с заданным комментарием")
     @Test
-    void shouldDelete() {
-        BookComment deletingBookComment = em.find(BookComment.class, BOOK_ONE_COMMENT1_ID);
-        bookCommentRepositoryJpa.delete(deletingBookComment);
-        assertThat(em.find(BookComment.class, BOOK_ONE_COMMENT1_ID)).isNull();
+    void findById() {
+        BookCommentDto bookCommentDto = bookCommentCrudService.findById(BOOK_ONE_COMMENT1_ID);
+        assertThat(bookCommentDto)
+                .hasFieldOrPropertyWithValue(FIELD_ID, BOOK_ONE_COMMENT1_ID)
+                .hasFieldOrPropertyWithValue(FIELD_BOOK_ID, BOOK_ONE_ID)
+                .hasFieldOrPropertyWithValue(FIELD_BOOK_TITLE, BOOK_ONE_TITLE)
+                .hasFieldOrPropertyWithValue(FIELD_BOOK_COMMENT, BOOK_ONE_COMMENT1_COMMENT);
     }
 }

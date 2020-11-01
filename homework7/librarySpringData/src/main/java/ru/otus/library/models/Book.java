@@ -34,4 +34,15 @@ public class Book {
     @OneToOne(targetEntity = Genre.class, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    @OneToMany(targetEntity = BookComment.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "book_id")
+    private List<BookComment> bookComment;
+
+    @Override
+    public String toString() {
+        return "Book: id = " + this.id + ", title = " + this.title +
+                ", " + this.author.toString() +
+                ", " + this.genre.toString();
+    }
 }

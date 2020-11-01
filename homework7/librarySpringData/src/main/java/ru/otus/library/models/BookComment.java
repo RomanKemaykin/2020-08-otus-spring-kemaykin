@@ -19,4 +19,8 @@ public class BookComment {
 
     @Column(name = "comment")
     private String comment;
+
+    @OneToOne(targetEntity = Book.class)
+    @JoinColumn(name = "book_id")
+    private Book book;
 }

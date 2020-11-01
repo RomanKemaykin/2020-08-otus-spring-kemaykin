@@ -1,13 +1,17 @@
 package ru.otus.library.service;
 
+import ru.otus.library.dto.BookDto;
+
+import java.util.List;
+
 public interface BookCrudService {
-    void listAll();
+    List<BookDto> findAll();
 
-    void add();
+    void add(BookDto bookDto);
 
-    void showBookById(long id);
+    BookDto findBookById(long id);
 
     void deleteBookById(long id);
 
-    void modifyBookById(long id);
+    void modifyBook(BookDto bookDto);
 }
