@@ -1,0 +1,29 @@
+application:
+  locale: en_EN
+
+spring:
+  messages:
+    basename: bundle
+    fallback-to-system-locale: false
+
+  shell:
+    interactive:
+      enabled: false
+
+  datasource:
+    url: jdbc:h2:mem:librarydb
+    driver-class-name: org.h2.Driver
+    initialization-mode: always
+    schema: schema.sql
+    data: testData.sql
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+    properties:
+      hibernate:
+      #format_sql: true
+
