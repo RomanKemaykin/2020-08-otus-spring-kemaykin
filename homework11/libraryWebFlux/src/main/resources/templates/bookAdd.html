@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add book</title>
+    <style type="text/css">
+        body {
+            padding: 60px;
+        }
+
+        label {
+            display: inline-block;
+            width: 150px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- BookDto add -->
+<form id="edit-form" action="/book">
+    <h1>ADD: Book Info:</h1>
+
+    <div class="row">
+        <label for="title-input">Title:</label>
+        <input id="title-input" name="bookTitle" type="text" value=""/>
+    </div>
+
+    <div class="row">
+        <label for="author-input">Author name:</label>
+        <input id="author-input" name="authorName" type="text" value=""/>
+    </div>
+
+    <div class="row">
+        <label for="genre-input">Genre name:</label>
+        <input id="genre-input" name="genreName" type="text" value=""/>
+    </div>
+
+    <div class="row">
+        <button id="submit-button" type="submit">Save</button>
+    </div>
+
+    <script>
+        document.getElementById("submit-button").onclick = function () {
+            var bookDto = {
+                'bookTitle': document.getElementById("title-input").value,
+                'authorName': document.getElementById("author-input").value,
+                'genreName': document.getElementById("genre-input").value
+            };
+
+            var retVal = false;
+            $.ajax({
+                url: '/api/book/',
+                type: 'POST',
+                data: JSON.stringify(bookDto),
+                contentType: "application/json"
+            })
+            .done(function () {
+                window.location.href = '/book';
+                retVal = true;
+            })
+            return retVal;
+        }
+    </script>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit bookDto</title>
+    <style type="text/css">
+        body {
+            padding: 60px;
+        }
+
+        label {
+            display: inline-block;
+            width: 150px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- BookDto edition -->
+<form id="edit-form" action="/book">
+    <h1>EDIT: Book Info:</h1>
+
+    <div class="row">
+        <label for="id-input">ID:</label>
+        <input id="id-input" type="text" readonly="readonly" value="1"/>
+    </div>
+
+    <div class="row">
+        <label for="title-input">Title:</label>
+        <input id="title-input" name="bookTitle" type="text" value="Book title"/>
+    </div>
+
+    <div class="row">
+        <label for="author-input">Author name:</label>
+        <input id="author-input" name="authorName" type="text" value="Book author"/>
+    </div>
+
+    <div class="row">
+        <label for="genre-input">Genre name:</label>
+        <input id="genre-input" name="genreName" type="text" value="Book genre"/>
+    </div>
+
+    <div class="row">
+        <button id="submit-button" type="submit">Save</button>
+    </div>
+
+    <script>
+        $(function () {
+            var params = (new URL(document.location)).searchParams;
+            $.get('/api/book/' + params.get("id")).done(function (bookDto) {
+                var inputControl;
+                inputControl = document.getElementById("id-input");
+                inputControl.setAttribute('value', bookDto.id);
+                inputControl = document.getElementById("title-input");
+                inputControl.setAttribute('value', bookDto.bookTitle);
+                inputControl = document.getElementById("author-input");
+                inputControl.setAttribute('value', bookDto.authorName);
+                inputControl = document.getElementById("genre-input");
+                inputControl.setAttribute('value', bookDto.genreName);
+
+            })
+        });
+
+        document.getElementById("submit-button").onclick = function () {
+            var params = (new URL(document.location)).searchParams;
+
+            var bookDto = {
+                'id': document.getElementById("id-input").value,
+                'bookTitle': document.getElementById("title-input").value,
+                'authorName': document.getElementById("author-input").value,
+                'genreName': document.getElementById("genre-input").value
+            };
+
+            var retVal = false;
+            $.ajax({
+                url: '/api/book/' + params.get("id"),
+                type: 'PUT',
+                data: JSON.stringify(bookDto),
+                contentType: "application/json"
+            })
+            .done(function () {
+                window.location.href = '/book';
+                retVal = true;
+            })
+            return retVal;
+        }
+    </script>
+</form>
+
+</body>
+</html>

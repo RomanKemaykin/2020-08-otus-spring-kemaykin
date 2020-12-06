@@ -1,0 +1,17 @@
+application:
+  locale: en_EN
+
+spring:
+  messages:
+    basename: bundle
+    fallback-to-system-locale: false
+
+  data:
+    mongodb:
+      port: 0
+      database: test
+
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.library.changelogsTest
