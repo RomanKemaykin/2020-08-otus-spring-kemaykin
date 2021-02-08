@@ -1,0 +1,52 @@
+application:
+  locale: en_EN
+
+spring:
+  messages:
+    basename: bundle
+    fallback-to-system-locale: false
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db\changelog\db.changelog-master.yaml
+
+  shell:
+    interactive:
+      enabled: false
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/demodb
+    username: postgres
+    password: 123456
+    initialization-mode: always
+    hikari:
+      connection-test-query:
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+    properties:
+      hibernate:
+      #format_sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+  cloud:
+    stream:
+      binders:
+        binderName:
+          type: kafka
+      bindings:
+        teamDeliveredSubscribe:
+          destination: team-delivered
+        teamMemberDeliveredSubscribe:
+          destination: team-member-delivered
+
+logging:
+  level:
+    root: info
