@@ -3,12 +3,10 @@ package ru.diasoft.digitalq.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.diasoft.digitalq.dto.TeamDto;
 import ru.diasoft.digitalq.models.TeamEntity;
-import ru.diasoft.digitalq.models.TeamMemberEntity;
 import ru.diasoft.digitalq.repositories.TeamMemberRepository;
 import ru.diasoft.digitalq.repositories.TeamRepository;
 
@@ -23,11 +21,11 @@ public class TeamServiceImpl implements TeamService {
     private final TeamMemberRepository teamMemberRepository;
 
     @Override
-    public Page<TeamDto> findTeams(Pageable pageable) {
-        Page<TeamEntity> teamEntityPage = teamRepository.findAll(pageable);
-        List<TeamDto> teamDtoList = teamEntityPage.getContent().stream()
+    public List<TeamDto> findTeams() {
+        List<TeamEntity> teamEntityList = teamRepository.findAll();
+        List<TeamDto> teamDtoList = teamEntityList.stream()
                 .map(teamEntity -> teamEntityToDto(teamEntity)).collect(Collectors.toList());
-        return new PageImpl<>(teamDtoList, pageable, teamEntityPage.getTotalElements());
+        return teamDtoList;
     }
 
     @Override

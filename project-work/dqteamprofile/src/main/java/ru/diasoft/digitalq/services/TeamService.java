@@ -1,13 +1,12 @@
 package ru.diasoft.digitalq.services;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import ru.diasoft.digitalq.dto.TeamDto;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TeamService {
-    Page<TeamDto> findTeams(Pageable pageable);
+    List<TeamDto> findTeams();
 
     Optional<TeamDto> findTeamById(long id);
 

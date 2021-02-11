@@ -25,6 +25,7 @@
 		<dstrace-spring-boot-starter-cloud-stream.version>2.01.01-20031601
 		</dstrace-spring-boot-starter-cloud-stream.version>
 		<spring-cloud.version>Hoxton.SR7</spring-cloud.version>
+		<jquery.version>3.3.1</jquery.version>
 	</properties>
 
 	<dependencies>
@@ -76,6 +77,17 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>${jquery.version}</version>
 		</dependency>
 
 		<!-- Spring Cloud Streams Kafka-->

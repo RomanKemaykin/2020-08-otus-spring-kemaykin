@@ -3,8 +3,6 @@ package ru.diasoft.digitalq.rest.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import ru.diasoft.digitalq.dto.TeamDto;
 import ru.diasoft.digitalq.services.TeamService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -22,10 +21,10 @@ public class TeamController {
     private final TeamService teamService;
 
     @GetMapping("api/team")
-    @ApiOperation(value = "Метод возвращает данные по всем командам, по странично", tags = {"Team"})
-    public ResponseEntity<Page<TeamDto>> getPageOfTeams(Pageable pageable) {
-        Page<TeamDto> teamDtoPage = teamService.findTeams(pageable);
-        return ResponseEntity.ok(teamDtoPage);
+    @ApiOperation(value = "Метод возвращает данные по всем командам", tags = {"Team"})
+    public ResponseEntity<List<TeamDto>> getAllTeams() {
+        List<TeamDto> teamDtoList = teamService.findTeams();
+        return ResponseEntity.ok(teamDtoList);
     }
 
     @ApiOperation(value = "Метод возвращает данные по одной команде с переданным id", tags = {"Team"})
