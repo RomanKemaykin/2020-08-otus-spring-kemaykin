@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0001-team-role-data
+      author: rkemaykin
+      dbms: h2,postgresql
+      runOnChange: true
+      loadUpdateData:
+        primaryKey: id
+        file: teamRole.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        seperator: ';'
+        encoding: UTF-8
+        tableName: team_role
+
+  - changeSet:
+      id: 0002-team-data
+      author: rkemaykin
+      dbms: h2,postgresql
+      runOnChange: true
+      loadUpdateData:
+        primaryKey: id
+        file: team.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        seperator: ';'
+        encoding: UTF-8
+        tableName: team
+
+  - changeSet:
+      id: 0003-team-member-data
+      author: rkemaykin
+      dbms: h2,postgresql
+      runOnChange: true
+      loadUpdateData:
+        primaryKey: id
+        file: teamMember.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        seperator: ';'
+        encoding: UTF-8
+        tableName: team_member

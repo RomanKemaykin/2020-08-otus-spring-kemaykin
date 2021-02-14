@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.diasoft.digitalq</groupId>
-	<artifactId>dqteamprofile</artifactId>
+	<artifactId>dev-profile</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dqteamprofile</name>
+	<name>dev-profile</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -178,6 +178,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>dev-profile</finalName>
 	</build>
 
 </project>

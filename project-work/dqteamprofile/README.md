@@ -37,3 +37,8 @@
   - обработка потоков от Kafka - 07.02
   - нормальный интерфейс (простые страницы для crud с объектом "команда" с js-кодом) - 10.02
   - Docker + Hystrix
+
+Добавление команды через топик team_delivered 
+{"id": 0, "name": "team top", "teamLeadName": "Vasya", "productOwnerName": "Peter", "productCenterName": "product center new", "curatorName": "Vlad", "dateStart": "2020-01-19", "dateEnd": "2050-12-31"}
+Добавление участника команды через топик team_member_delivered
+{"id": 0, "name": "team member 3_1", "teamRoleName": "developer", "teamId": 3, "teamName": "team 3", "percentageOfParticipation": 100, "dateStart": "2021-01-13", "dateEnd": "2050-12-31"}

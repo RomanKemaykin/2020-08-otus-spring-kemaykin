@@ -1,1 +1,1 @@
-Library application
+Development profile application
