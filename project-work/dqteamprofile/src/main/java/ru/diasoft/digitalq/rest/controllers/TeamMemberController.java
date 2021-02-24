@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.diasoft.digitalq.dto.TeamDto;
 import ru.diasoft.digitalq.dto.TeamMemberDto;
 import ru.diasoft.digitalq.services.TeamMemberService;
 
@@ -68,4 +67,5 @@ public class TeamMemberController {
         }
         return ResponseEntity.noContent().build();
     }
+
 }

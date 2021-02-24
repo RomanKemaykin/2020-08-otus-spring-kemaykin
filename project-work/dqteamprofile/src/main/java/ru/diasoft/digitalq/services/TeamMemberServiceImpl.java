@@ -1,5 +1,7 @@
 package ru.diasoft.digitalq.services;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,6 +18,7 @@ import ru.diasoft.digitalq.repositories.TeamRepository;
 import ru.diasoft.digitalq.repositories.TeamRoleRepository;
 
 import javax.print.attribute.standard.MediaSize;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,12 +39,25 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         return new PageImpl<>(teamMemberDtoList, pageable, teamMemberEntityPage.getTotalElements());
     }
 
+    @HystrixCommand(commandKey = "teamMemberKey", fallbackMethod="buildFallbackTeamMembersByTeam")
     @Override
+    @Transactional
     public List<TeamMemberDto> findTeamMembersByTeamId(long id) {
+        if ((id % 3) == 0) {
+            System.out.println("It is a chance to demonstrate Hystrix action");
+            try {
+                System.out.println("Start sleeping...." + System.currentTimeMillis());
+                Thread.sleep(3500);
+            } catch (InterruptedException e) {
+                System.out.println("Hystrix thread interrupted...." + System.currentTimeMillis());
+                e.printStackTrace();
+            }
+        }
         List<TeamMemberDto> teamMemberDtoList = new ArrayList<>();
         Optional<TeamEntity> teamEntity = teamRepository.findById(id);
         if (!teamEntity.isEmpty()) {
-            teamMemberDtoList = teamEntity.get().getTeamMemberEntityList().stream()
+            List<TeamMemberEntity> teamMemberEntityList = teamMemberRepository.findByTeamEntity(teamEntity.get());
+            teamMemberDtoList = teamMemberEntityList.stream()
                     .map(teamMemberEntity -> teamMemberEntityToDto(teamMemberEntity))
                     .collect(Collectors.toList());
         }
@@ -114,4 +130,20 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         }
     }
 
+    private List<TeamMemberDto> buildFallbackTeamMembersByTeam(long id) {
+        System.out.println("buildFallbackTeamMembersByTeam");
+        TeamMemberDto teamMemberDto = TeamMemberDto.builder()
+                .id(0)
+                .teamId(id)
+                .teamName("-")
+                .teamRoleName("-")
+                .name("-")
+                .percentageOfParticipation(0)
+                .dateEnd(LocalDate.now())
+                .dateStart(LocalDate.now())
+                .build();
+        List<TeamMemberDto> teamMemberDtoList = new ArrayList<>();
+        teamMemberDtoList.add(teamMemberDto);
+        return teamMemberDtoList;
+    }
 }
