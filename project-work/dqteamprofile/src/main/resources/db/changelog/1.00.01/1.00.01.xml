@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+	
+    <property name="autoIncrement" value="false" dbms="postgresql,mssql,oracle"/>
+    <property name="autoIncrement" value="true" dbms="h2"/>
+
+	<changeSet id="1.00.01-createTeamTable" author="rkemaykin" context="update" runInTransaction="false" objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="team"/>
+			</not>
+		</preConditions>
+		
+		<createSequence sequenceName="team_id_seq" incrementBy="1" startValue="1"/>
+
+		<createTable tableName="team">
+			<column name="id" type="NUMERIC(19,0)" autoIncrement="${autoIncrement}" defaultValueSequenceNext="team_id_seq">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(60)">
+				<constraints nullable="false" />
+			</column>
+			<column name="team_lead_name" type="VARCHAR(60)">
+				<constraints nullable="false" />
+			</column>
+			<column name="product_owner_name" type="VARCHAR(60)">
+				<constraints nullable="false" />
+			</column>
+			<column name="product_center_name" type="VARCHAR(60)">
+				<constraints nullable="false" />
+			</column>
+			<column name="curator_name" type="VARCHAR(60)">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_start" type="date">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_end" type="date">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createIndex tableName="team" indexName="pk_team" unique="true">
+			<column name="id"/>
+		</createIndex>
+
+		<comment>Создание таблицы team с индексами</comment>
+	</changeSet>
+
+	<changeSet id="1.00.01-createTeamMemberTable" author="rkemaykin" context="update" runInTransaction="false" objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="team_member"/>
+			</not>
+		</preConditions>
+
+		<createSequence sequenceName="team_member_id_seq" incrementBy="1" startValue="1"/>
+
+		<createTable tableName="team_member">
+			<column name="id" type="NUMERIC(19,0)" autoIncrement="${autoIncrement}" defaultValueSequenceNext="team_member_id_seq">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(60)">
+				<constraints nullable="false" />
+			</column>
+			<column name="team_role_id" type="NUMERIC(19,0)">
+				<constraints nullable="false" />
+			</column>
+			<column name="team_id" type="NUMERIC(19,0)">
+				<constraints nullable="false" />
+			</column>
+			<column name="percentage_of_participation" type="NUMERIC(3,0)">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_start" type="date">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_end" type="date">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createIndex tableName="team_member" indexName="pk_team_member" unique="true">
+			<column name="id"/>
+		</createIndex>
+
+		<comment>Создание таблицы team_member с индексами</comment>
+	</changeSet>
+
+	<changeSet id="1.00.01-createTeamRoleTable" author="rkemaykin" context="update" runInTransaction="false" objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="team_role"/>
+			</not>
+		</preConditions>
+
+		<createSequence sequenceName="team_role_id_seq" incrementBy="1" startValue="1"/>
+
+		<createTable tableName="team_role">
+			<column name="id" type="NUMERIC(19,0)" autoIncrement="${autoIncrement}" defaultValueSequenceNext="team_role_id_seq">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(60)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createIndex tableName="team_role" indexName="pk_team_role" unique="true">
+			<column name="id"/>
+		</createIndex>
+
+		<comment>Создание таблицы team_role с индексами</comment>
+	</changeSet>
+
+</databaseChangeLog>

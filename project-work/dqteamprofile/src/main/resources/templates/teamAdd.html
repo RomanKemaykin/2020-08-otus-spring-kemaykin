@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add team</title>
+    <style type="text/css">
+        body {
+            padding: 60px;
+        }
+
+        label {
+            display: inline-block;
+            width: 150px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- TeamDto add -->
+<form id="edit-form" action="/team">
+    <h1>ADD: Team Info:</h1>
+
+    <div class="row">
+        <label for="name-input">Name:</label>
+        <input id="name-input" name="name" type="text" value="Team name"/>
+    </div>
+
+    <div class="row">
+        <label for="teamLeadName-input">TeamLeadName:</label>
+        <input id="teamLeadName-input" name="teamLeadName" type="text" value="teamLeadName"/>
+    </div>
+
+    <div class="row">
+        <label for="productOwnerName-input">ProductOwnerName:</label>
+        <input id="productOwnerName-input" name="productOwnerName" type="text" value="ProductOwnerName"/>
+    </div>
+
+    <div class="row">
+        <label for="productCenterName-input">ProductCenterName:</label>
+        <input id="productCenterName-input" name="productCenterName" type="text" value="ProductCenterName"/>
+    </div>
+
+    <div class="row">
+        <label for="curatorName-input">CuratorName:</label>
+        <input id="curatorName-input" name="curatorName" type="text" value="CuratorName"/>
+    </div>
+
+    <div class="row">
+        <label for="dateStart-input">DateStart:</label>
+        <input id="dateStart-input" name="dateStart" type="text" value="DateStart"/>
+    </div>
+
+    <div class="row">
+        <label for="dateEnd-input">DateEnd:</label>
+        <input id="dateEnd-input" name="dateEnd" type="text" value="DateEnd"/>
+    </div>
+
+    <div class="row">
+        <button id="submit-button" type="submit">Save</button>
+    </div>
+
+    <script>
+        document.getElementById("submit-button").onclick = function () {
+            var params = (new URL(document.location)).searchParams;
+
+            var teamDto = {
+                'name': document.getElementById("name-input").value,
+                'teamLeadName': document.getElementById("teamLeadName-input").value,
+                'productOwnerName': document.getElementById("productOwnerName-input").value,
+                'productCenterName': document.getElementById("productCenterName-input").value,
+                'curatorName': document.getElementById("curatorName-input").value,
+                'dateStart': document.getElementById("dateStart-input").value,
+                'dateEnd': document.getElementById("dateEnd-input").value
+            };
+
+            var retVal = false;
+            $.ajax({
+                url: '/api/team/',
+                type: 'POST',
+                data: JSON.stringify(teamDto),
+                contentType: "application/json"
+            })
+            .done(function () {
+                window.location.href = '/team';
+                retVal = true;
+            })
+            return retVal;
+        }
+    </script>
+</form>
+
+</body>
+</html>
